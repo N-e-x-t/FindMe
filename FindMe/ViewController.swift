@@ -51,6 +51,45 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let region = MKCoordinateRegion(center: location, span: span)
         map.setRegion(region, animated: true)
+        
+        latLabel.text = String(userLocation.coordinate.latitude)
+        lonLabel.text = String(userLocation.coordinate.longitude)
+        altLabel.text = String(userLocation.altitude)
+        speedLabel.text = String(userLocation.speed)
+        courseLabel.text = String(userLocation.course)
+        
+        CLGeocoder().reverseGeocodeLocation(userLocation)
+        {
+           (placemarks, errors) in
+            if errors != nil {
+            print(errors)
+            }
+            else{
+                if let placemark = placemarks?[0]
+                {
+                    var address = ""
+                    if placemark.thoroughfare != nil {
+                        address += placemark.thoroughfare! + ", "
+                    }
+                    if placemark.subThoroughfare != nil {
+                        address += placemark.subThoroughfare! + ", "
+                    }
+                    if placemark.subLocality != nil {
+                        address += placemark.subLocality! + ", "
+                    }
+                    if placemark.locality != nil {
+                        address += placemark.locality! + ", "
+                    }
+                    if placemark.postalCode != nil {
+                        address += placemark.postalCode! + ", "
+                    }
+                    if placemark.country != nil {
+                        address += placemark.country! + " "
+                    }
+                    self.addressLabel.text = address
+                }
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
